@@ -1,0 +1,11 @@
+.remover {
+  background: #f4d6ff;
+  padding: 20px;
+  margin: 10px;
+}
+
+.remover li {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 5px;
+}
