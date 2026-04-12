@@ -1,0 +1,13 @@
+.contador2 button {
+  padding: 10px 30px;
+  background: #db1313;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.contador2 button:hover {
+  background: #158ab8;
+}
+
