@@ -35,8 +35,14 @@ const roteador = createBrowserRouter([
     path: "cadastro-cliente",
     element: <CadastroCliente />,
   },
+
   {
-    path: "*",
+    path: "cadastro-cliente/:clienteId?",
+    element: <CadastroCliente />,
+  },
+
+  {
+    path: "*", //
     element: <h3>Página não encontrada!!</h3>,
   },
 ]);

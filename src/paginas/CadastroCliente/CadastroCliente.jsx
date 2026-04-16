@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import BotaoCustomizado from "../../componentes/BotaoCustomizado/BotaoCustomizado";
 import CampoCustomizado from "../../componentes/CampoCustomizado/CampoCustomizado";
@@ -6,10 +6,11 @@ import Principal from "../../componentes/Principal/Principal";
 import formatarComMascara, { MASCARA_CELULAR, MASCARA_CPF } from "../../utils/formatarComMascara";
 import validarCPF from "../../utils/validarCPF";
 import validarEmail from "../../utils/validarEmail";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 function CadastroCliente() {
   const navigate = useNavigate();
+  const params = useParams();
 
   const [cliente, setCliente] = useState({
     nome: "",
@@ -19,6 +20,21 @@ function CadastroCliente() {
     email: "",
     foto: null,
   });
+
+  useEffect(() => {
+    if (params.clienteId) {
+      const clientesDoLocalStorage =
+        JSON.parse(localStorage.getItem("clientes") || "[]");
+
+      const clienteEncontrado = clientesDoLocalStorage.find(
+        (itemCliente) => itemCliente.id === params.clienteId
+      );
+
+      if (clienteEncontrado) {
+        setCliente(clienteEncontrado);
+      }
+    }
+  }, [params]);
 
   const salvar = () => {
     if (!cliente.nome?.trim() || !cliente.cpf?.trim()) {
@@ -36,11 +52,27 @@ function CadastroCliente() {
       return;
     }
 
-    const clientesDoLocalStorage = JSON.parse(localStorage.getItem("clientes")) || [];
+    const clientesDoLocalStorage =
+      JSON.parse(localStorage.getItem("clientes") || "[]");
 
-    const novoCliente = { id: crypto.randomUUID(), ...cliente };
-    clientesDoLocalStorage.push(novoCliente);
-    localStorage.setItem("clientes", JSON.stringify(clientesDoLocalStorage));
+    if (cliente.id) {
+      // editar cliente existente
+      const indexDoCliente = clientesDoLocalStorage.findIndex(
+        (itemCliente) => itemCliente.id === cliente.id
+      );
+
+      if (indexDoCliente !== -1) {
+        clientesDoLocalStorage[indexDoCliente] = cliente;
+      }
+    } else {
+      const novoCliente = { id: crypto.randomUUID(), ...cliente };
+      clientesDoLocalStorage.push(novoCliente);
+    }
+
+    localStorage.setItem(
+      "clientes",
+      JSON.stringify(clientesDoLocalStorage)
+    );
 
     toast.success("Cliente salvo com sucesso!");
     navigate("/lista-clientes");
@@ -53,13 +85,22 @@ function CadastroCliente() {
       <CampoCustomizado
         label="Nome"
         value={cliente.nome}
-        onChange={(e) => setCliente({ ...cliente, nome: e.target.value })}
+        onChange={(e) =>
+          setCliente({ ...cliente, nome: e.target.value })
+        }
       />
+
       <CampoCustomizado
         label="CPF"
         value={cliente.cpf}
         onChange={(e) =>
-          setCliente({ ...cliente, cpf: formatarComMascara(e.target.value, MASCARA_CPF) })
+          setCliente({
+            ...cliente,
+            cpf: formatarComMascara(
+              e.target.value,
+              MASCARA_CPF
+            ),
+          })
         }
         onBlur={(e) => {
           if (e.target.value.trim() && !validarCPF(e.target.value)) {
@@ -67,25 +108,41 @@ function CadastroCliente() {
           }
         }}
       />
+
       <CampoCustomizado
         type="date"
         label="Data Nascimento"
         value={cliente.dataNascimento}
-        onChange={(e) => setCliente({ ...cliente, dataNascimento: e.target.value })}
+        onChange={(e) =>
+          setCliente({
+            ...cliente,
+            dataNascimento: e.target.value,
+          })
+        }
       />
+
       <CampoCustomizado
         type="tel"
         label="Celular"
         value={cliente.celular}
         onChange={(e) =>
-          setCliente({ ...cliente, celular: formatarComMascara(e.target.value, MASCARA_CELULAR) })
+          setCliente({
+            ...cliente,
+            celular: formatarComMascara(
+              e.target.value,
+              MASCARA_CELULAR
+            ),
+          })
         }
       />
+
       <CampoCustomizado
         type="email"
         label="Email"
         value={cliente.email}
-        onChange={(e) => setCliente({ ...cliente, email: e.target.value })}
+        onChange={(e) =>
+          setCliente({ ...cliente, email: e.target.value })
+        }
         onBlur={(e) => {
           if (e.target.value.trim() && !validarEmail(e.target.value)) {
             toast.error("Email inválido!");
@@ -102,7 +159,10 @@ function CadastroCliente() {
           if (imagem) {
             const reader = new FileReader();
             reader.onload = (event) => {
-              setCliente({ ...cliente, foto: event.target.result });
+              setCliente({
+                ...cliente,
+                foto: event.target.result,
+              });
             };
             reader.readAsDataURL(imagem);
           }
@@ -110,14 +170,26 @@ function CadastroCliente() {
       />
 
       {cliente.foto && (
-        <div style={{ marginTop: "10px", display: "flex", justifyContent: "center" }}>
+        <div
+          style={{
+            marginTop: "10px",
+            display: "flex",
+            justifyContent: "center",
+          }}
+        >
           <img
             src={cliente.foto}
             alt="Foto do Cliente"
-            style={{ width: "150px", height: "150px", objectFit: "cover", borderRadius: "8px" }}
+            style={{
+              width: "150px",
+              height: "150px",
+              objectFit: "cover",
+              borderRadius: "8px",
+            }}
           />
         </div>
       )}
+
       <BotaoCustomizado tipo="primario" aoClicar={salvar}>
         Salvar
       </BotaoCustomizado>
