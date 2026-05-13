@@ -13,13 +13,18 @@ import ListaClientes from "./paginas/ListaClientes/ListaClientes";
 import ListaProdutos from "./paginas/ListaProdutos/ListaProdutos";
 import ListaTarefas from "./paginas/ListaTarefas/ListaTarefas";
 import PaginaInicial from "./paginas/PaginaInicial/PaginaInicial";
-
+import NovoUsuario from "./paginas/NovoUsuario/NovoUsuario";
 const roteador = createBrowserRouter([
   {
     path: "",
     element: <PaginaInicial />,
   },
   {
+   path: "novo-usuario",
+    element: <NovoUsuario />,
+  },
+  {
+
     path: "lista-produtos",
     element: <ListaProdutos />,
   },
