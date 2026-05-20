@@ -6,29 +6,29 @@ import CampoCustomizado from "../../componentes/CampoCustomizado/CampoCustomizad
 import Principal from "../../componentes/Principal/Principal";
 import normalizarString from "../../utils/normalizarString";
 import "./ListaClientes.css";
+import { useAppContext } from "../../componentes/contexto/AppContext";
+import { buscarClientesPeloUsuario, removerClientePeloId } from "../../servicos/clientes";
 
 function ListaClientes() {
   const navigate = useNavigate();
+  const { usuarioLogado } = useAppContext();
 
   const [termoBusca, setTermoBusca] = useState("");
 
-  const clientesDoLocalStorage = JSON.parse(localStorage.getItem("clientes")) || [];
+  const clientesDoLocalStorage = buscarClientesPeloUsuario(usuarioLogado.id);
 
   const removerCliente = (clienteParaRemover) => {
     if (confirm(`Tem certeza que deseja remover o cliente ${clienteParaRemover.nome} ?`)) {
-      const clientesAtualizados = clientesDoLocalStorage.filter(
-        (cliente) => cliente.id !== clienteParaRemover.id
-      );
-      localStorage.setItem("clientes", JSON.stringify(clientesAtualizados));
+      removerClientePeloId(clienteParaRemover.id);
       navigate("/lista-clientes");
     }
   };
 
-  const clientesFiltrados = clientesDoLocalStorage.filter((cliente) =>
-    normalizarString(cliente.nome).includes(normalizarString(termoBusca)) ||
-    normalizarString(cliente.cpf).includes(normalizarString(termoBusca)) ||
-    normalizarString(cliente.cidade).includes(normalizarString(termoBusca))
-
+  const clientesFiltrados = clientesDoLocalStorage.filter(
+    (cliente) =>
+      normalizarString(cliente.nome).includes(normalizarString(termoBusca)) ||
+      normalizarString(cliente.cpf).includes(normalizarString(termoBusca)) ||
+      normalizarString(cliente.cidade).includes(normalizarString(termoBusca))
   );
 
   return (

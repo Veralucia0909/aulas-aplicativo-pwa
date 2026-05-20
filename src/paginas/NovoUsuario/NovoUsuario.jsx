@@ -1,110 +1,111 @@
 import { useState } from "react";
-
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import BotaoCustomizado from "../../componentes/BotaoCustomizado/BotaoCustomizado";
 import CampoCustomizado from "../../componentes/CampoCustomizado/CampoCustomizado";
 import Principal from "../../componentes/Principal/Principal";
-import { TbHomeStats } from "react-icons/tb";
-import { toast } from "react-toastify";
+import validarEmail from "../../utils/validarEmail";
+import validarSenha from "../../utils/validarSenha";
 
-const NovoUsuario = () => {
+function NovoUsuario() {
+  const navigate = useNavigate();
+
   const [usuarioForm, setUsuarioForm] = useState({
     nome: "",
     email: "",
     senha: "",
-    confirmarSenha: "",
+    confirmacaoSenha: "",
   });
 
-const salvar = () => {
-if (!usuarioForm.nome.trim() || !usuarioForm.email.trim() || !usuarioForm.senha.trim() || !usuarioForm.confirmarSenha.trim()) {
-toast("Todos os campos são obrigatórios!");
-return;
-}
+  const salvar = () => {
+    if (!usuarioForm.nome.trim() || !usuarioForm.email.trim() || !usuarioForm.senha.trim()) {
+      toast.error("Todos os campos são obrigatórios.");
+      return;
+    }
 
-if (!usuarioForm.nome.trim() || !usuarioForm.email.trim() || !usuarioForm.senha.trim() || !usuarioForm.confirmarSenha.trim()) {
-toast("As senhas não coincidem!");
-return;
-}
- console.log("Salvar", usuarioForm);
+    if (!validarEmail(usuarioForm.email)) {
+      toast.error("Email inválido.");
+      return;
+    }
 
-const usuarioDoLocalStorage = JSON.parse(localStorage.getItem("usuarios")) || [];
+    if (!validarSenha(usuarioForm.senha)) {
+      toast.error(
+        "A senha deve conter no mínimo 4 caracteres."
+      );
+      return;
+    }
 
-const usuarioJaCadastrado = usuarioDoLocalStorage.find(u => u.email === usuarioForm.email);
+    if (usuarioForm.senha !== usuarioForm.confirmacaoSenha) {
+      toast.error("As senhas não coincidem.");
+      return;
+    }
 
-if (usuarioJaCadastrado) {
-toast.error("Este email já está cadastrado!");
-return;
-}
+    const usuariosDoLocalStorage = JSON.parse(localStorage.getItem("usuarios")) || [];
 
-usuarioDoLocalStorage.push({id: crypto.randomUUID(), ...usuarioForm}); 
+    const usuarioJaCadastrado = usuariosDoLocalStorage.find((u) => u.email === usuarioForm.email);
+    if (usuarioJaCadastrado) {
+      // if(usuarioJaCadastrado !== undefined && usuarioJaCadastrado !== null)
+      toast.error("Este email já está cadastrado.");
+      return;
+    }
 
-localStorage.setItem("usuarios", JSON.stringify(usuarioDoLocalStorage));
-toast.success("Usuário salvo com sucesso!");
+    usuariosDoLocalStorage.push({ id: crypto.randomUUID(), ...usuarioForm });
 
+    localStorage.setItem("usuarios", JSON.stringify(usuariosDoLocalStorage));
 
-}
+    toast.success("Usuário cadastrado com sucesso!");
+    navigate("/login");
+  };
+
   return (
-    <Principal titulo="Novo Usuário">
-
+    <Principal titulo="Novo Usuário" voltarPara="/login">
       <CampoCustomizado
-        label="nome"
+        label="Nome"
+        id="nome"
         value={usuarioForm.nome}
-        onChange={(e) =>
-          setUsuarioForm({
-            ...usuarioForm,
-            nome: e.target.value,
-          })
-        }
+        onChange={(e) => setUsuarioForm({ ...usuarioForm, nome: e.target.value })}
         obrigatorio
       />
-
       <CampoCustomizado
-        label="email"
+        label="Email"
         type="email"
         value={usuarioForm.email}
-        onChange={(e) =>
-          setUsuarioForm({
-            ...usuarioForm,
-            email: e.target.value,
-          })
-        }
+        onChange={(e) => setUsuarioForm({ ...usuarioForm, email: e.target.value })}
+        onBlur={(e) => {
+          if (!validarEmail(e.target.value)) {
+            toast.error("Email inválido.");
+          }
+        }}
         obrigatorio
       />
-
       <CampoCustomizado
-        label="senha"
+        label="Senha"
         type="password"
         value={usuarioForm.senha}
-        onChange={(e) =>
-          setUsuarioForm({
-            ...usuarioForm,
-            senha: e.target.value,
-          })
-        }
+        onChange={(e) => setUsuarioForm({ ...usuarioForm, senha: e.target.value })}
+        onBlur={(e) => {
+          if (!validarSenha(e.target.value)) {
+            toast.error(
+              "A senha deve conter no mínimo 4 caracteres."
+            );
+          }
+        }}
         obrigatorio
       />
 
       <CampoCustomizado
-        label="confirmar senha"
+        label="Confirmação da Senha"
         type="password"
-        value={usuarioForm.confirmarSenha}
-        onChange={(e) =>
-          setUsuarioForm({
-            ...usuarioForm,
-            confirmarSenha: e.target.value,
-          })
-        }
+        value={usuarioForm.confirmacaoSenha}
+        onChange={(e) => setUsuarioForm({ ...usuarioForm, confirmacaoSenha: e.target.value })}
         obrigatorio
       />
 
-      <BotaoCustomizado
-        tipo="secundario"
-        onClick={() => console.log(usuarioForm)}
-      >
+      <BotaoCustomizado tipo="secundario" aoClicar={salvar}>
         Salvar
       </BotaoCustomizado>
-
     </Principal>
   );
-};
+}
 
 export default NovoUsuario;
