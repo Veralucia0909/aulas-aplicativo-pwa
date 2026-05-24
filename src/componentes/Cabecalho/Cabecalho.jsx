@@ -1,15 +1,20 @@
-import { useAppContext } from "../../componentes/contexto/AppContext";
+import { useAppContext } from "../../contexto/AppContext";
 import Avatar from "../Avatar/Avatar";
 import "./Cabecalho.css";
-
 
 function Cabecalho() {
   const { usuarioLogado } = useAppContext();
 
   return (
     <header className="cabecalho__root">
-      <img src="/logo.png" height="32" alt="Logo" />
-      {usuarioLogado && <Avatar nome={usuarioLogado.nome} />}
+      <a href="/">
+        <img src="/logo.png" height="32" alt="Logo" />
+      </a>
+      {usuarioLogado && (
+        <a href="/meu-perfil">
+          <Avatar nome={usuarioLogado.nome} imagem={usuarioLogado.foto} />
+        </a>
+      )}
     </header>
   );
 }

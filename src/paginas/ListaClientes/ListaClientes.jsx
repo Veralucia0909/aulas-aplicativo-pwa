@@ -6,7 +6,7 @@ import CampoCustomizado from "../../componentes/CampoCustomizado/CampoCustomizad
 import Principal from "../../componentes/Principal/Principal";
 import normalizarString from "../../utils/normalizarString";
 import "./ListaClientes.css";
-import { useAppContext } from "../../componentes/contexto/AppContext";
+import { useAppContext } from "../../contexto/AppContext";
 import { buscarClientesPeloUsuario, removerClientePeloId } from "../../servicos/clientes";
 
 function ListaClientes() {

@@ -4,7 +4,7 @@ import { toast } from "react-toastify";
 import BotaoCustomizado from "../../componentes/BotaoCustomizado/BotaoCustomizado";
 import CampoCustomizado from "../../componentes/CampoCustomizado/CampoCustomizado";
 import Principal from "../../componentes/Principal/Principal";
-import { useAppContext } from "../../componentes/contexto/AppContext";
+import { useAppContext } from "../../contexto/AppContext";
 import { adicionarCliente, atualizarCliente, buscarClientePeloId } from "../../servicos/clientes";
 import formatarComMascara, { MASCARA_CELULAR, MASCARA_CPF } from "../../utils/formatarComMascara";
 import validarCPF from "../../utils/validarCPF";

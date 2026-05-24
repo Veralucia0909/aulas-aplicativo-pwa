@@ -1,15 +1,13 @@
 import "./Login.css";
 
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import BotaoCustomizado from "../../componentes/BotaoCustomizado/BotaoCustomizado";
 import CampoCustomizado from "../../componentes/CampoCustomizado/CampoCustomizado";
 import Principal from "../../componentes/Principal/Principal";
 
 function Login() {
-  const navigate = useNavigate();
-
   const [loginForm, setLoginForm] = useState({
     email: "",
     senha: "",
@@ -31,7 +29,7 @@ function Login() {
     }
 
     localStorage.setItem("usuarioLogado", usuarioEncontrado.id);
-    navigate("/");
+    window.location.href = "/";
   };
 
   return (

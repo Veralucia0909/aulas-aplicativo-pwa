@@ -8,6 +8,8 @@ import "./App.css";
 import Cabecalho from "./componentes/Cabecalho/Cabecalho";
 import Rodape from "./componentes/Rodape/Rodape";
 // imports de páginas
+import ValidarAutenticacao from "./componentes/ValidarAutenticacao/ValidarAutenticacao";
+import AppContextProvider from "./contexto/AppContext";
 import CadastroCliente from "./paginas/CadastroCliente/CadastroCliente";
 import ListaClientes from "./paginas/ListaClientes/ListaClientes";
 import ListaProdutos from "./paginas/ListaProdutos/ListaProdutos";
@@ -15,8 +17,7 @@ import ListaTarefas from "./paginas/ListaTarefas/ListaTarefas";
 import Login from "./paginas/Login/Login";
 import NovoUsuario from "./paginas/NovoUsuario/NovoUsuario";
 import PaginaInicial from "./paginas/PaginaInicial/PaginaInicial";
-import ValidarAutenticacao from "./componentes/ValidarAutenticacao/ValidarAutenticacao";
-import AppContextProvider from "./componentes/contexto/AppContext";
+import PerfilUsuario from "./paginas/PerfilUsuario/PerfilUsuario.jsx";
 
 const roteador = createBrowserRouter([
   {
@@ -35,6 +36,10 @@ const roteador = createBrowserRouter([
       {
         path: "",
         element: <PaginaInicial />,
+      },
+      {
+        path: "meu-perfil",
+        element: <PerfilUsuario />,
       },
       {
         path: "lista-produtos",
