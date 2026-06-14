@@ -26,17 +26,19 @@ function CadastroCliente() {
   });
 
   useEffect(() => {
-    if (params.clienteId) {
-      const clienteEncontrado = buscarClientePeloId(params.clienteId);
-
-      if (clienteEncontrado) {
-        // eslint-disable-next-line react-hooks/set-state-in-effect
-        setCliente(clienteEncontrado);
+    const getCliente = async () => {
+      const { data } = await buscarClientePeloId(params.clienteId);
+      if (data) {
+        setCliente(data);
       }
+    };
+
+    if (params.clienteId) {
+      getCliente();
     }
   }, [params]);
 
-  const salvar = () => {
+  const salvar = async () => {
     if (!cliente.nome?.trim() || !cliente.cpf?.trim()) {
       toast.error("Nome e CPF são obrigatórios!");
       return;
@@ -53,9 +55,9 @@ function CadastroCliente() {
     }
 
     if (cliente.id) {
-      atualizarCliente(cliente);
+      await atualizarCliente(cliente);
     } else {
-      adicionarCliente(cliente, usuarioLogado.id);
+      await adicionarCliente(cliente, usuarioLogado.id);
     }
 
     toast.success("Cliente salvo com sucesso!");
@@ -101,7 +103,7 @@ function CadastroCliente() {
       <CampoCustomizado
         type="date"
         label="Data Nascimento"
-        value={cliente.dataNascimento}
+        value={cliente.dataNascimento.split("T")[0]}
         onChange={(e) => setCliente({ ...cliente, dataNascimento: e.target.value })}
       />
       <CampoCustomizado

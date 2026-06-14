@@ -1,28 +1,29 @@
-const clientesDoLocalStorage = JSON.parse(localStorage.getItem("clientes")) || [];
+import axios from "axios";
 
-export const buscarClientesPeloUsuario = (idUsuario) => {
-  return clientesDoLocalStorage.filter((cliente) => cliente.idUsuario === idUsuario);
+const api = axios.create({
+  baseURL: "http://localhost:3000",
+  headers: {
+    "Content-Type": "application/json",
+    "x-usuario": localStorage.getItem("usuarioLogado"),
+  },
+});
+
+export const buscarClientesPeloUsuario = async () => {
+  return await api.get(`/clientes`);
 };
 
-export const buscarClientePeloId = (idCliente) => {
-  return clientesDoLocalStorage.find((cliente) => cliente.id === idCliente);
+export const buscarClientePeloId = async (idCliente) => {
+  return await api.get(`/clientes/${idCliente}`);
 };
 
-export const adicionarCliente = (cliente, idUsuario) => {
-  const novoCliente = { id: crypto.randomUUID(), idUsuario, ...cliente };
-  clientesDoLocalStorage.push(novoCliente);
-  localStorage.setItem("clientes", JSON.stringify(clientesDoLocalStorage));
+export const adicionarCliente = async (cliente) => {
+  await api.post("/clientes", cliente);
 };
 
-export const atualizarCliente = (clienteAtualizado) => {
-  const indexDoCliente = clientesDoLocalStorage.findIndex(
-    (cliente) => cliente.id === clienteAtualizado.id
-  );
-  clientesDoLocalStorage[indexDoCliente] = clienteAtualizado;
-  localStorage.setItem("clientes", JSON.stringify(clientesDoLocalStorage));
+export const atualizarCliente = async (clienteAtualizado) => {
+  await api.put("/clientes", clienteAtualizado);
 };
 
-export const removerClientePeloId = (idCliente) => {
-  const clientesAtualizados = clientesDoLocalStorage.filter((cliente) => cliente.id !== idCliente);
-  localStorage.setItem("clientes", JSON.stringify(clientesAtualizados));
+export const removerClientePeloId = async (idCliente) => {
+  return await api.delete(`/clientes/${idCliente}`);
 };

@@ -17,7 +17,7 @@ import ListaTarefas from "./paginas/ListaTarefas/ListaTarefas";
 import Login from "./paginas/Login/Login";
 import NovoUsuario from "./paginas/NovoUsuario/NovoUsuario";
 import PaginaInicial from "./paginas/PaginaInicial/PaginaInicial";
-import PerfilUsuario from "./paginas/PerfilUsuario/PerfilUsuario.jsx";
+import PerfilUsuario from "./paginas/PerfilUsuario/PerfilUsuario";
 
 const roteador = createBrowserRouter([
   {

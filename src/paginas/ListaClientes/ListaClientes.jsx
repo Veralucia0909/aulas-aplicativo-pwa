@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { MdAddCircle, MdDelete, MdEdit } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 import Avatar from "../../componentes/Avatar/Avatar";
@@ -14,20 +14,28 @@ function ListaClientes() {
   const { usuarioLogado } = useAppContext();
 
   const [termoBusca, setTermoBusca] = useState("");
+  const [clientes, setClientes] = useState([]);
 
-  const clientesDoLocalStorage = buscarClientesPeloUsuario(usuarioLogado.id);
+  useEffect(() => {
+    const getClientes = async () => {
+      const { data } = await buscarClientesPeloUsuario(usuarioLogado.id);
+      setClientes(data);
+    };
 
-  const removerCliente = (clienteParaRemover) => {
+    getClientes();
+  }, [usuarioLogado.id]);
+
+  const removerCliente = async (clienteParaRemover) => {
     if (confirm(`Tem certeza que deseja remover o cliente ${clienteParaRemover.nome} ?`)) {
-      removerClientePeloId(clienteParaRemover.id);
-      navigate("/lista-clientes");
+      await removerClientePeloId(clienteParaRemover.id);
+      document.location.reload()
     }
   };
 
-  const clientesFiltrados = clientesDoLocalStorage.filter(
+  const clientesFiltrados = clientes.filter(
     (cliente) =>
       normalizarString(cliente.nome).includes(normalizarString(termoBusca)) ||
-      normalizarString(cliente.cpf).includes(normalizarString(termoBusca)) ||
+      // normalizarString(cliente.cpf).includes(normalizarString(termoBusca)) ||
       normalizarString(cliente.cidade).includes(normalizarString(termoBusca))
   );
 
